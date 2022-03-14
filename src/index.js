@@ -246,7 +246,42 @@ window.contacts = [
  Create and return the HTML to render a single contact card.
  The `contact` parameter is an object representing a single contact. 
 */
-function renderContact(contact) {}
+
+function renderContact(contact) 
+{
+  const { id, picture, name, email, phone, address, website, company } = contact;
+
+  const content =  `<div class="card" data-id="${id}">
+      <button class="deleteBtn" title="Delete this contact">X</button>
+      <div class="avatar">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <img src="${picture}" />
+      </div>
+      <div class="info">
+        <span class="name big">${name}</span>
+        <span class="email small">${email}</span>
+      </div>
+      <div class="details">
+        <div class="phone">${phone}</div>
+        <div class="website">${website}</div>
+      </div>
+
+      <div class="additional">
+        <div class="address">
+          <div class="suite">${address.suite}</div>
+          <div class="street">${address.street}</div>
+          <div class="city">${address.city}</div>
+        </div>
+        <div class="company">
+          <div class="label">Works at</div>
+          <div class="company-name">${company.name}</div>
+        </div>
+      </div>
+    </div>`
+
+  return content;
+}
 
 /*
   Render the array of contacts and insert them on the DOM.
