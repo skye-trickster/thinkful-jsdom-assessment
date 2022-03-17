@@ -287,14 +287,26 @@ function renderContact(contact)
   Render the array of contacts and insert them on the DOM.
   The contacts should be rendered in the `section` with id "contacts".
 */
-function render(contacts) {}
+function render(contacts) 
+{
+  const contactSection = document.querySelector("#contacts")
+  contactSection.innerHTML = ""
+
+  contactSection.innerHTML = contacts.map( renderContact ).join("")
+}
 
 /*
   Filter by city. Filter the  array of contacts by the given city.
   Return a new array containing the filtered list. 
   Do NOT modify the original array.
 */
-function filterByCity(city) {}
+function filterByCity(city) 
+{
+  if (city == `0`) return contacts;
+  const filteredContacts = contacts.filter(({address}) => address.city == city)
+
+  return filteredContacts
+}
 
 /*
   Add an `change` event listener to the `filterOptions` select element.
@@ -303,7 +315,16 @@ function filterByCity(city) {}
   If the value is not "0" call `filterByCity()` passing the value selected by
   the user. Then call `render()` with the filtered list.
 */
-function filterHandler() {}
+function filterHandler() 
+{
+  const filterOptions = document.querySelector("#filterOptions")
+  filterOptions.addEventListener(`change`, (event) =>
+  {
+    const filteredContacts = filterByCity(event.target.value)
+    render(filteredContacts)
+  })
+  
+}
 
 /*
   Accepts an array of contacts.
@@ -311,12 +332,34 @@ function filterHandler() {}
   Create a list of cities from the contacts array with no duplicates then
   add an `<option>` element for each city to the select.
 */
-function loadCities(contacts) {}
+function loadCities(contacts) 
+{
+  let cityList = contacts.map(({address}) => address.city)
+  cityList = [...new Set(cityList)]
+
+  const options = document.querySelector('#filterOptions');
+  options.innerHTML = ""
+
+  const addOption = function(value, addText = "")
+  {
+    option = document.createElement(`option`)
+    option.value = value;
+    option.innerText = addText ? addText : value;
+    options.appendChild(option)
+  }
+
+  addOption(`0`, `-- Select a city --`)
+  cityList.forEach((contact) => addOption(contact))
+
+}
 
 /*
   Remove the contact from the contact list with the given id.
 */
-function deleteContact(id) {}
+function deleteContact(id) 
+{
+  contacts = contacts.filter((contact) => contact.id != id);
+}
 
 /*
   Add a `click` event handler to the `deleteBtn` elements.
@@ -324,13 +367,30 @@ function deleteContact(id) {}
   corresponding `data-id` then call `deleteContact()` and re-render 
   the list.
 */
-function deleteButtonHandler() {}
+function deleteButtonHandler() 
+{
+  const contactSection = document.querySelector("#contacts")
+  contactSection.addEventListener(`click`, (event) =>
+  {
+    if (event.target.tagName == `BUTTON`)
+    {
+      const _id = event.target.parentNode.getAttribute("data-id")
+      deleteContact(_id);
+      render(contacts)
+    }
+  })
+}
 
 /*
   Perform all startup tasks here. Use this function to attach the 
   required event listeners, call loadCities() then call render().
 */
-function main() {}
+function main() {
+  filterHandler()
+  deleteButtonHandler()
+  loadCities(contacts);
+  render(contacts);
+}
 
 window.addEventListener("DOMContentLoaded", main);
 
